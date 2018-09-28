@@ -27,8 +27,8 @@ class Maze:
         self.pix[random.randint(0, self.wcells - 1) * 2 + 1, 0] = (colors[0], colors[1], colors[2], 255)
         self.pix[random.randint(0, self.wcells - 1) * 2 + 1, self.h - 1] = (colors[0], colors[1], colors[2], 255)
 
-        self.im.save('solution.png')
-        # self.resize()
+        self.im.save('maze.png')
+        self.resize()
 
     def visit(self, x, y, unvisited, colors, change):
         self.pix[x * 2 + 1, y * 2 + 1] = (colors[0], colors[1], colors[2], 255)
@@ -51,9 +51,9 @@ class Maze:
     def changeColors(self, colors, change):
         for x in range(3):
             if colors[x] >= 255:
-                change[x] -= self.factor * 2
+                change[x] -= self.factor * 2 * (x + 1)
             elif colors[x] <= 0:
-                change[x] += self.factor * 2
+                change[x] += self.factor * 2 * (x + 1)
             colors[x] += change[x]
 
     def resize(self):
@@ -63,9 +63,9 @@ class Maze:
         for x in range(large_im.width):
             for y in range(large_im.height):
                 large_pix[x, y] = self.pix[int(x / factor), int(y / factor)]
-        large_im.save('solutionlarge.png')
+        large_im.save('mazelarge.png')
 
 w = int(input("width: "))
 h = int(input("height: "))
-m = Maze(w, h, True, 10)
+m = Maze(w, h, True, 1)
 m.generate()
