@@ -53,12 +53,12 @@ class Maze:
         self.pix[x, y] = (self.colors[0], self.colors[1], self.colors[2], 255)
 
     def change_colors(self):
-        for x in range(3):
-            if self.colors[x] >= 255:
-                self.change[x] -= self.factor * 2 * (x + 1)
-            elif self.colors[x] <= 0:
-                self.change[x] += self.factor * 2 * (x + 1)
-            self.colors[x] += self.change[x]
+        for i in range(3):
+            if self.colors[i] >= 255:
+                self.change[i] -= self.factor * 2 * (i + 1)
+            elif self.colors[i] <= 0:
+                self.change[i] += self.factor * 2 * (i + 1)
+            self.colors[i] += self.change[i]
 
     def resize(self, ratio):
         large_im = Image.new('RGBA', (self.w * ratio, self.h * ratio), color = 'black')
