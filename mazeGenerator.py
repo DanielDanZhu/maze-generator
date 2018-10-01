@@ -1,11 +1,14 @@
 from PIL import Image
 import random
+import sys
+
+sys.setrecursionlimit(3000)
 
 class Maze:
-    def __init__(self, w, h, c, f):
+    def __init__(self, w, h, c, f, save_loc):
         self.wcells, self.hcells = w, h
         self.w, self.h = w * 2 + 1, h * 2 + 1
-        self.color, self.factor = c, f
+        self.color, self.factor, self.save_loc = c, f, save_loc
         self.colors, self.change = [255, 255, 255], [f] * 3
 
         self.im = Image.new('RGBA', (self.w, self.h), color = 'black')
@@ -27,9 +30,9 @@ class Maze:
         self.color_pix(random.randint(0, self.wcells - 1) * 2 + 1, 0)
         self.color_pix(random.randint(0, self.wcells - 1) * 2 + 1, self.h - 1)
 
-        self.im.save('maze.png')
-        if input("enlarged version (y/n): ") == 'y':
-            self.resize(int(input("ratio: ")))
+        self.im.save(self.save_loc)
+        # if input("enlarged version (y/n): ") == 'y':
+        #     self.resize(int(input("factor: ")))
 
     def visit(self, x, y, unvisited):
         self.color_pix(x * 2 + 1, y * 2 + 1)
@@ -60,22 +63,23 @@ class Maze:
                 self.change[i] += self.factor * 2 * (i + 1)
             self.colors[i] += self.change[i]
 
-    def resize(self, ratio):
-        large_im = Image.new('RGBA', (self.w * ratio, self.h * ratio), color = 'black')
+    def resize(self, factor):
+        large_im = Image.new('RGBA', (self.w * factor, self.h * factor), color = 'black')
         large_pix = large_im.load()
         for x in range(large_im.width):
             for y in range(large_im.height):
-                large_pix[x, y] = self.pix[int(x / ratio), int(y / ratio)]
+                large_pix[x, y] = self.pix[int(x / factor), int(y / factor)]
         large_im.save('mazelarge.png')
 
 def prompt():
     w = int(input("width: "))
     h = int(input("height: "))
     c = input("colored path creation (y/n): ") == 'y'
+    save_loc = "maze.png"
     if c:
-        return Maze(w, h, c, int(input("color gradient factor: ")))
-    return Maze(w, h, c, 0)
+        return Maze(w, h, c, int(input("color gradient factor: ")), save_loc)
+    return Maze(w, h, c, 0, save_loc)
 
-#m = Maze(20, 20, True, 1)
-m = prompt()
-m.generate()
+#m = Maze(20, 20, True, 1, save_loc)
+#m = prompt()
+#m.generate()
